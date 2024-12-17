@@ -1,5 +1,6 @@
 # Clasificador de números enteros
 ## Equipo 3: 
+* Becerra Lorenzo Saul Alejandro 
 * Chargoy Olvera Rafael Eduardo
 * Escriban sus nombres aqui por orden alfabético
 
