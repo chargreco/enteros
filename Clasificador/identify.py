@@ -25,7 +25,7 @@ def perfecto(num):
     return suma == num
 
 def deficiente(num):
-    return perfecto(num) and num!= suma_divisores(num)
+    return num > suma_divisores(num)
 
 def suma_divisores(num):
     suma = 1
