@@ -2,6 +2,7 @@
 ## Equipo 3: 
 * Becerra Lorenzo Saul Alejandro 
 * Chargoy Olvera Rafael Eduardo
+* Hernandez Hernandez Emanuel
 * Escriban sus nombres aqui por orden alfabético
 
 Este programa clasifica números enteros ingresados por el usuario en diferentes categorías (primos, compuestos, pares, impares, perfectos y deficientes) y grafica los resultados.
