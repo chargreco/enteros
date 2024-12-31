@@ -13,19 +13,60 @@ from tkinter import filedialog
 import csv
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from identify import *
 ```
 Importamos las bibliotecas necesarias para la interfaz gráfica, manejo de archivos CSV y generación de gráficos.
+
+Definimos las funciones que clasifican los números enteros en diferentes categorías.
+
+```python
+def primo(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def compuesto(num):
+    return not primo(num)
+
+def par(num):
+    return num % 2 == 0
+
+def impar(num):
+    return not par(num)
+
+def perfecto(num):
+    suma = 1
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            suma += i
+            if i != num // i:
+                suma += num // i
+    return suma == num
+
+def deficiente(num):
+    return num > suma_divisores(num)
+
+def suma_divisores(num):
+    suma = 1
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            suma += i
+            if i != num // i:
+                suma += num // i
+    return suma
+```
 
 Inicializamos las variables globales que contarán las ocurrencias de cada categoría.
 
 ```python
-a = 0
-b = 0
-c = 0
-d = 0
-e = 0
-f = 0
+a = 0 #primo
+b = 0 #compuesto
+c = 0 #par
+d = 0 #impar
+e = 0 #perfecto
+f = 0 #deficiente
 ```
 
 Definimos la función `on_button_click` que se ejecutará cuando el usuario haga clic en el botón. Esta función toma el número ingresado por el usuario, lo clasifica y actualiza las variables globales y la etiqueta de resultados. También maneja errores de entrada.
@@ -50,15 +91,14 @@ def on_button_click():
     e += perfecto(num)
     f += deficiente(num)
     
-    result_text = (
-        f"{'Es primo' if primo(num) else 'NO es primo'}\n"
-        f"{'Es compuesto' if compuesto(num) else 'NO es compuesto'}\n"
-        f"{'Es par' if par(num) else 'NO es par'}\n"
-        f"{'Es impar' if impar(num) else 'NO es impar'}\n"
-        f"{'Es perfecto' if perfecto(num) else 'NO es perfecto'}\n"
-        f"{'Es deficiente' if deficiente(num) else 'NO es deficiente'}\n"
-    )
-    result_label.config(text=result_text)
+    primo_var.set(primo(num))
+    compuesto_var.set(compuesto(num))
+    par_var.set(par(num))
+    impar_var.set(impar(num))
+    perfecto_var.set(perfecto(num))
+    deficiente_var.set(deficiente(num))
+    
+    num_listbox.insert(END, num)
     
     plot_graph(a, b, c, d, e, f)
 ```
@@ -83,6 +123,7 @@ def load_csv():
                 d += impar(num)
                 e += perfecto(num)
                 f += deficiente(num)
+                num_listbox.insert(END, num)
     
     plot_graph(a, b, c, d, e, f)
 ```
@@ -108,73 +149,28 @@ def plot_graph(a, b, c, d, e, f):
     canvas.get_tk_widget().pack(side=TOP, fill=BOTH, expand=1)
 ```
 
-Configuramos la ventana principal de Tkinter y agregamos los widgets necesarios (entrada de texto, botón, etiqueta de error y etiqueta de resultados).
+Definimos la función `on_listbox_select` que se ejecuta cuando el usuario selecciona un número de la lista. Esta función coloca el número seleccionado en la entrada y lo evalúa nuevamente.
 
 ```python
-raiz = Tk()
-raiz.title("Clasificador de numeros enteros")
-raiz.config(bg="white")
-raiz.geometry("650x400")
-
-entry = Entry(raiz)
-entry.pack(pady=10) 
-
-error_label = Label(raiz, text="", fg="red", bg="white")
-error_label.pack(pady=5)
-
-button_frame = Frame(raiz)
-button_frame.pack(pady=10)
-
-button = Button(button_frame, text="Evaluar", command=on_button_click)
-button.pack(side=LEFT, padx=5)
-
-load_button = Button(button_frame, text="Cargar CSV", command=load_csv)
-load_button.pack(side=LEFT, padx=5)
-
-result_label = Label(raiz, text="", justify=LEFT, bg="white")
-result_label.pack(pady=10, padx=20, anchor='w')  
-
-raiz.mainloop()
+def on_listbox_select(event):
+    selected_num = num_listbox.get(num_listbox.curselection())
+    entry.delete(0, END)
+    entry.insert(0, selected_num)
+    on_button_click()
 ```
 
-## Código de identify.py
-
-El archivo `identify.py` contiene las funciones que clasifican los números enteros en diferentes categorías. A continuación se muestra el código y la descripción de cada función.
+Definimos la función `save_history` que permite al usuario guardar los números almacenados en el historial en un archivo CSV.
 
 ```python
-def primo(num):
-    if num < 2:
-        return 0
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return 0
-    return 1
-
-def compuesto(num):
-    if num < 2:
-        return 0
-    for i in range(2, int(num**0.5) + 1):
-        if num % i == 0:
-            return 1
-    return 0
-
-def par(num):
-    return 1 if num % 2 == 0 else 0
-
-def impar(num):
-    return 1 if num % 2 != 0 else 0
-
-def perfecto(num):
-    if num < 2:
-        return 0
-    suma = sum(i for i in range(1, num) if num % i == 0)
-    return 1 if suma == num else 0
-
-def deficiente(num):
-    if num < 2:
-        return 0
-    suma = sum(i for i in range(1, num) if num % i == 0)
-    return 1 if suma < num else 0
+def save_history():
+    file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+    if not file_path:
+        return
+    
+    with open(file_path, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        numbers = [num_listbox.get(i) for i in range(num_listbox.size())]
+        writer.writerow(numbers)
 ```
 
 ### Descripción de las funciones
