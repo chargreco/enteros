@@ -5,6 +5,9 @@
 * Hernandez Hernandez Emanuel
 * Moreno Ramirez José Jorge 
 
+[Aquí](Source/main.pyw) podrás encontrar el programa con extensión `.pyw`.
+[Aquí](Docs/README.md) podrás encontrar toda la documentación.
+
 Este programa clasifica números enteros ingresados por el usuario en diferentes categorías (primos, compuestos, pares, impares, perfectos y deficientes) y grafica los resultados.
 
 ```python
